@@ -62,7 +62,7 @@ class SiteController extends Controller
 	}
 
 	/**
-	 * Displays Bunk puy Page for logged user or home page.
+	 * Displays Bank pay Page for logged user or home page.
 	 *
 	 * @return string
 	 */
@@ -160,8 +160,15 @@ class SiteController extends Controller
 	 */
 	public function actionBank()
 	{
+		$db = User::qUserbank();
+
+		foreach($db as &$item)
+		{
+			$item['balance'] = round($item['balance'],2);
+		}
+
 		$data=new ArrayDataProvider([
-			'allModels'=>User::qUserbank(),
+			'allModels'=>$db,
 			'sort'=>[
 				'attributes'=>[
 					'id',
