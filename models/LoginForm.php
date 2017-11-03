@@ -51,6 +51,7 @@ class LoginForm extends Model
         	if(isset($user_data)){
 				return Yii::$app->user->login($user_data,0);
 			}else{
+
 				$user=new User;
 				$user->username=$this->username;
 				$user->auth_key = \Yii::$app->security->generateRandomString();
