@@ -34,8 +34,8 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username is required
             ['username', 'required'],
+            //['username', 'unique'],
         ];
     }
 

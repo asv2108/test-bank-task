@@ -14,6 +14,7 @@ class UserTest extends \Codeception\Test\Unit
 
 
 
+
     public function testFindUserByUsername()
     {
         expect_that($user = User::findByUsername('admin'));
