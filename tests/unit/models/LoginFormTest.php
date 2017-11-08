@@ -17,7 +17,7 @@ class LoginFormTest extends \Codeception\Test\Unit
     public function testLoginCorrect()
     {
         $this->model = new LoginForm([
-            'username' => 'admin',
+            'username' => 'ttt',
         ]);
 
         expect_that($this->model->login());

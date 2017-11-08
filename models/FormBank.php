@@ -34,13 +34,8 @@ class FormBank extends Model
 	{
 		return [
 			// username and sum fields are required
-			[
-				[
-					'username',
-					'sum'
-				],
-				'required'
-			],
+				[['username','sum'],'required'],
+				['sum', 'double'],
 		];
 	}
 
