@@ -6,23 +6,16 @@ use app\models\FormBank;
 use app\models\User;
 use Yii;
 
+/**
+ * Class FormBankTest
+ * @package models
+ */
 class FormBankTest extends \Codeception\Test\Unit
 {
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
-
-
-    protected function _before()
-    {
-    }
-
-    protected function _after()
-    {
-    }
-
-    public function testUserNameFieldRequired()
+	/**
+	 * check the require field - user name
+	 */
+	public function testUserNameFieldRequired()
     {
 		$model = new FormBank;
 		$model->load(array(
@@ -35,7 +28,10 @@ class FormBankTest extends \Codeception\Test\Unit
 		expect('Username is require',$model->errors)->hasKey('username');
     }
 
-    public function testSumFieldRequired()
+	/**
+	 * check the require field - amount of payment
+	 */
+	public function testSumFieldRequired()
     {
 		$model = new FormBank;
 		$model->load(array(
@@ -48,7 +44,10 @@ class FormBankTest extends \Codeception\Test\Unit
 		expect('Sum is require',$model->errors)->hasKey('sum');
     }
 
-	public function testSumFieldType()
+	/**
+	 * check the field - amount of payment, only integer
+	 */
+	public function testSumFieldIsIntegerType()
 	{
 		$model = new FormBank;
 		$model->load(array(
@@ -61,6 +60,9 @@ class FormBankTest extends \Codeception\Test\Unit
 		expect('Sum is only integer',$model->errors)->hasKey('sum');
 	}
 
+	/**
+	 * check amount of payment is a negative number
+	 */
 	public function testSumIsNegativeNumber(){
 		$model = new FormBank;
 		$model->load(array(
@@ -72,6 +74,9 @@ class FormBankTest extends \Codeception\Test\Unit
 		verify($model->sum)->lessThan(1);
 	}
 
+	/**
+	 * check - get an user, whom payer sends payment
+	 */
 	public function testGetReceiver(){
 		$model = new FormBank;
 		$model->load(array(
@@ -83,6 +88,9 @@ class FormBankTest extends \Codeception\Test\Unit
 		verify(User::findByUsername($model->username))->hasKey('id');
 	}
 
+	/**
+	 * check the possibility of creating a new receiver
+	 */
 	public function testCreateNewReceiver(){
 		$model = new FormBank;
 		$model->load(array(
@@ -105,8 +113,20 @@ class FormBankTest extends \Codeception\Test\Unit
 		verify($id)->true();
 	}
 
+	/**
+	 * check the rounding of the number under two decimal places
+	 */
+	public function testRoundingUpToTwoCharacters(){
+		verify((string)round(22.33315,2))->contains('.33');
+	}
+
+	/**
+	 * check the creation of a test transaction
+	 */
 	public function testSaveTransactionPutOn(){
+
 		$model = new FormBank;
+		Bank::deleteAll();
 		$model->load(array(
 			'FormBank'=>array(
 				'username'=>'admin',
@@ -119,7 +139,20 @@ class FormBankTest extends \Codeception\Test\Unit
 		$bank->sum=round($model->sum,2);
 		$bank->save();
 		$id=Yii::$app->db->getLastInsertID();
-		verify($id)->true();
+
+		expect('Get id last inserted put on row',$id)->notNull();
+		$bank->findId($id);
+		$bank->parent_id = $id+=1;
+		$bank->update();
+		$id2=Yii::$app->db->getLastInsertID();
+		expect('Get id last updated row after set link with take off row',$id2)->notNull();
+	}
+
+	/**
+	 * check the creation of a negative number
+	 */
+	public function testCreateNegativeNumber(){
+		verify((string) (22-(22*2)))->contains('-22');
 	}
 
 }
